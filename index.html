@@ -10,14 +10,59 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-8 bg-danger" style="height:500px" id="click-box"></div>
-    <div class="col-lg-4" id="counter"></div>
+    <div class="col-lg-4">
+      <div class="col-lg-12" id="timer">Pozostały czas: 0</div>
+      <div class="col-lg-12" id="counter">Click count: 0</div>
+      <button id="start">Start</button>
+      <button id="reset">Reset</button>
+    </div>
+
   </div>
 </div>
 <script>
-  let counter = 1;
-  document.getElementById('click-box').addEventListener('click', function() {
-    document.getElementById('counter').innerText = 'Click count: ' + ++counter;
+  const DEFAULT_TIME = 30;
+  let counter = 0;
+  let timerCount = 0;
+  let timerId = null;
+
+  const clickBox = document.getElementById('click-box');
+  const counterElement = document.getElementById('counter');
+  const timerElement = document.getElementById('timer');
+  const startBtn = document.getElementById('start');
+  const resetBtn = document.getElementById('reset');
+  function start() {
+    timerCount = DEFAULT_TIME;
+    timerElement.innerHTML = 'Pozostały czas: ' + timerCount;
+    if (timerId !== null) return;
+    timerId = setInterval(() => {
+      timerElement.innerHTML = 'Pozostały czas: ' + --timerCount;
+      if (timerCount <= 0) {
+        stop();
+      }
+    }, 1000);
+    startBtn.disabled = true;
+  }
+  function stop() {
+    clearInterval(timerId);
+    timerId = null;
+    startBtn.disabled = false;
+  }
+
+  function reset() {
+    stop();
+    timerCount = 0;
+    counter = 0;
+    counterElement.innerText = 'Click count: ' + DEFAULT_TIME;
+    timerElement.innerHTML = 'Pozostały czas: ' + 0;
+    startBtn.disabled = false;
+  }
+
+  clickBox.addEventListener('click', () => {
+    if (timerCount <= 0) return;
+    counterElement.innerText = 'Click count: ' + ++counter;
   });
+  startBtn.addEventListener('click', start);
+  resetBtn.addEventListener('click', reset);
 </script>
 </body>
 </html>
